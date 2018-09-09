@@ -1,0 +1,26 @@
+{
+    "name": "pauloamgomes/logger",
+    "type": "project",
+    "description": "Logger addon for Cockpit Headless CMS",
+    "keywords": ["cms", "headless", "api", "cockpit", "logging", "monolog"],
+    "homepage": "https://github.com/pauloamgomes/cockpit-cms-logger",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Paulo Gomes",
+            "email": "pauloamgomes@gmail.com",
+            "homepage": "https://www.pauloamgomes.net"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "monolog/monolog": "^1.23",
+    },
+    "autoload": {
+        "psr-0": {
+            "Monolog\\": "src/",
+            "Vendor\\Namespace\\": "src/",
+            "Vendor_Namespace_": "src/"
+        }
+    },
+}
