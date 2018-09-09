@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^7.0",
-        "monolog/monolog": "^1.23",
+        "monolog/monolog": "^1.23"
     },
     "autoload": {
         "psr-0": {
@@ -22,5 +22,5 @@
             "Vendor\\Namespace\\": "src/",
             "Vendor_Namespace_": "src/"
         }
-    },
+    }
 }
