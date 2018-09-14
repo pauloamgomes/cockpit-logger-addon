@@ -13,7 +13,7 @@ Installation can be performed with ot without php composer.
 $ cd your-cockpit-docroot/addons/Logger
 $ composer install
 ```
-3. Access module settings (http://your-cockpit-site/settings/logger) and confirm that page loads.
+3. Access module settings `https://your-cockpit-site/settings/logger` and confirm that page loads.
 
 ### Using php composer
 1. Install addon using composer
@@ -32,9 +32,14 @@ Above ACLs can be added to the global configuration file as below:
 
 ```yaml
 groups:
+  # manage logger settings
   managers:
     Logger:
         manage.admin: true
+  # view log entries
+  editors:
+    Logger:
+        manage.view: true
 ```
 
 ### Main Settings
@@ -189,6 +194,21 @@ $this->app->module('logger')->warning('something weird happened');
 $this->app->module('logger')->error('something very wrong happened', ['error' => $e]);
 
 ```
+
+## Viewing the most recent logs in Cockpit
+
+Logs can be accessed on the server and processed using any tool, additionaly its also possible to access from the UI
+to the most recent log entries - `https://your-cockpit-site/recent-logs`.
+
+![Recent log messages](https://monosnap.com/image/HaxDOWGzODFqHRKsVl1GVcJbAJeW2R.png)
+
+The UI supports automatic fetch and dynamic filters:
+
+![Recent log messages using filters](https://monosnap.com/image/V7C6x1cXgGgj66BR73NS3Cv2aOklvI.png)
+
+## Security considerations
+
+When using the StreamLogger and the log location is set to the `#storage:logs` ensure that file is not public accessible.
 
 ## Copyright and license
 
