@@ -52,16 +52,16 @@ $this->module('logger')->extend([
           $context['user'] = $user['user'];
         }
       }
-      if ($this->context['hostname']) {
+      if ($this->context['hostname'] && isset($_SERVER['REQUEST_URI'])) {
         $context['hostname'] = gethostbyaddr($_SERVER['REMOTE_ADDR']);
       }
-      if ($this->context['request_uri']) {
+      if ($this->context['request_uri'] && isset($_SERVER['REQUEST_URI'])) {
         $context['request_uri'] = $_SERVER['REQUEST_URI'];
       }
-      if ($this->context['referrer']) {
+      if ($this->context['referrer'] && isset($_SERVER['HTTP_REFERER'])) {
         $context['referrer'] = $_SERVER['HTTP_REFERER'];
       }
-      if ($this->context['http_method']) {
+      if ($this->context['http_method'] && isset($_SERVER['REQUEST_METHOD'])) {
         $context['http_method'] = $_SERVER['REQUEST_METHOD'];
       }
       // Set some debug information.
@@ -94,7 +94,7 @@ $this->module('logger')->extend([
     return $this->events;
   },
 
-  'eventEnabled' => function($event) {
+  'eventEnabled' => function ($event) {
     return isset($this->events[$event]);
   },
 
@@ -111,6 +111,155 @@ $this->module('logger')->extend([
     // Save the settings in cockpit options.
     $this->app->storage->setKey('cockpit/options', 'logger.settings', $settings);
     return $settings;
+  },
+
+  'parseTextLogEntry' => function ($line) {
+    $entry = [];
+
+    // Check if line is in valid format.
+    if (preg_match('/^\[.*\] cockpit.*: .* {.*} /', $line)) {
+      // Extract date.
+      if (preg_match('/^\[(.*)\] cockpit.*/', $line, $matches)) {
+        $entry['date'] = $matches[1];
+      }
+      // Extract level.
+      if (preg_match('/^\[.*\] cockpit\.(.*): .*/', $line, $matches)) {
+        $entry['level'] = $matches[1];
+      }
+      // Extract user.
+      if (preg_match('/"user":"([a-zA-Z-0-9-_]+)"/', $line, $matches)) {
+        $entry['user'] = $matches[1];
+      }
+      // Extract message.
+      if (preg_match('/\[.*\] cockpit\.[A-Z]+: (.*) {/', $line, $matches)) {
+        $entry['message'] = $matches[1];
+      }
+      // Extra context/extra.
+      if (preg_match('/\[.*\] cockpit\.[A-Z]+: .* (.*) /', $line, $matches)) {
+        $extra = json_decode($matches[1]);
+        $entry['extra'] = $matches[1];
+      }
+    }
+
+    return $entry;
+  },
+
+  'parseJsonLogEntry' => function ($json, $dateFormat) {
+    $entry = [];
+    if (isset($json['message'])) {
+      $entry['message'] = $json['message'];
+    }
+    if (isset($json['level_name'])) {
+      $entry['level'] = $json['level_name'];
+    }
+    if (isset($json['datetime'])) {
+      $entry['date'] = date($dateFormat, strtotime($json['datetime']['date']));
+    }
+    if (isset($json['context'])) {
+      $entry['user'] = $json['context']['user'];
+    }
+    return $entry;
+  },
+
+  'parseEntryType' => function($level) {
+    switch ($level) {
+      case 'ERROR':
+      case 'CRITICAL':
+      case 'ALERT':
+      case 'EMERGENCY':
+        return 'danger';
+        break;
+
+      case 'WARNING':
+        return 'warning';
+        break;
+    }
+    return 'info';
+  },
+
+  'parseEntryUser' => function($username) {
+    $user = [
+      'name' => $username,
+      'id' => '',
+    ];
+    $account = $this->app->storage->findOne('cockpit/accounts', [
+      'user' => $username,
+    ]);
+    if ($account && isset($account['_id'])) {
+      $user['id'] = $account['_id'];
+    }
+    return $user;
+  },
+
+  'getLogContents' => function($filename, $maxRows = 100) {
+    if (!file_exists($filename)) {
+      return ['entries' => []];
+    }
+    $settings = $this->app->storage->getKey('cockpit/options', 'logger.settings', []);
+    $lines = $this->tail($filename, $maxRows);
+    $entries = [];
+    foreach ($lines as $idx => $line) {
+      $json = json_decode($line, TRUE);
+      if (is_array($json)) {
+        $entry = $this->parseJsonLogEntry($json, $settings['dateFormat']);
+      }
+      else {
+        $entry = $this->parseTextLogEntry($line);
+      }
+      if (empty($entry) || !isset($entry['user']) || !isset($entry['level'])) {
+        continue;
+      }
+      $entry['type'] = $this->parseEntryType($entry['level']);
+      $entry['user'] = $this->parseEntryUser($entry['user']);
+      $entry['raw'] = $line;
+
+      $entries[] = $entry;
+    }
+
+    return ['entries' => $entries];
+  },
+
+  'tail' => function($filepath, $lines = 100) {
+    // Tails n lines of a text file.
+    // Based on https://gist.github.com/lorenzos/1711e81a9162320fde20
+
+    // Open file
+    $f = @fopen($filepath, "rb");
+    if ($f === FALSE) {
+      return false;
+    }
+    // Jump to last character
+    fseek($f, -1, SEEK_END);
+    // Read it and adjust line number if necessary
+    // (Otherwise the result would be wrong if file doesn't end with a blank line)
+    if (fread($f, 1) != "\n") {
+      $lines -= 1;
+    }
+    // Start reading
+    $output = '';
+    $chunk = '';
+    // While we would like more
+    while (ftell($f) > 0 && $lines >= 0) {
+      // Figure out how far back we should jump
+      $seek = min(ftell($f), 4096);
+      // Do the jump (backwards, relative to where we are)
+      fseek($f, -$seek, SEEK_CUR);
+      // Read a chunk and prepend it to our output
+      $output = ($chunk = fread($f, $seek)) . $output;
+      // Jump back to where we started reading
+      fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
+      // Decrease our line counter
+      $lines -= substr_count($chunk, "\n");
+    }
+    // While we have too many lines
+    // (Because of buffer size we might have read too many)
+    while ($lines++ < 0) {
+      // Find first newline and remove all text before that
+      $output = substr($output, strpos($output, "\n") + 1);
+    }
+    fclose($f);
+    $lines = explode("\n", trim($output));
+    return array_reverse($lines);
   },
 
 ]);
