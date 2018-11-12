@@ -102,7 +102,6 @@ A handler defines how the logs will be saved. Cockpit Logger provides two Handle
 | :--------------- | :------------------------------------------------------------------------------ |
 | StreamHandler    | Saves log entries in the filesystem using the configured location and filename  |
 | SyslogHandler    | Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility. |
-| SyslogHandler    | Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility. |
 | SyslogUdpHandler | Pushes the log entries to a remove rsyslog server. |
 
 The StreamHandler requires two additional settings:
