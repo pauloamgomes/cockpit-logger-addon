@@ -98,11 +98,12 @@ Its also possible to define the format of the date in the log entries, the value
 
 A handler defines how the logs will be saved. Cockpit Logger provides two Handlers:
 
-| Handler        | Purpose                                                                         |
-| :------------- | :------------------------------------------------------------------------------ |
-| StreamHandler  | Saves log entries in the filesystem using the configured location and filename  |
-| SyslogHandler  | Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility. |
-
+| Handler          | Purpose                                                                         |
+| :--------------- | :------------------------------------------------------------------------------ |
+| StreamHandler    | Saves log entries in the filesystem using the configured location and filename  |
+| SyslogHandler    | Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility. |
+| SyslogHandler    | Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility. |
+| SyslogUdpHandler | Pushes the log entries to a remove rsyslog server. |
 
 The StreamHandler requires two additional settings:
 
@@ -113,6 +114,25 @@ The SyslogHandler requires also to additional settings:
 
    - **Ident** - A string to identify the program name (e.g. cockpit)
    - **Facility** - The Syslog Facility to use
+
+#### Settings via config.yaml
+
+Besides the configuration page the settings can also be defined in the cockpit config/config.yaml file, e.g.:
+
+```yaml
+# Logger addon
+logger:
+  enabled: 1,
+  level: INFO
+  handler: StreamHandler
+  formatter: LineFormatter
+  context:
+    user: 1
+    hostname: 0
+    http_method: 1
+    referrer: 1
+    request_uri: 1
+```
 
 ### Event Settings
 
