@@ -132,6 +132,7 @@ logger:
     referrer: 1
     request_uri: 1
 ```
+When using the config.yaml, the settings will take precedence over the configuration page.
 
 ### Event Settings
 
