@@ -28,6 +28,7 @@ class Admin extends AuthController {
       'syslog' => [
         'ident' => 'cockpit',
         'facility' => 'local0',
+        'port' => '514',
       ],
       'handler' => 'StreamHandler',
       'formatter' => 'JsonFormatter',
@@ -65,7 +66,7 @@ class Admin extends AuthController {
         ['name' => 'imagestyles.createstyle', 'enabled' => TRUE],
         ['name' => 'imagestyles.remove', 'enabled' => TRUE],
       ],
-    ], $this->app->storage->getKey('cockpit/options', 'logger.settings', []));
+    ], $this->app->module('logger')->getSettings());
 
     return $this->render('logger:views/settings/index.php', ['settings' => $settings]);
   }

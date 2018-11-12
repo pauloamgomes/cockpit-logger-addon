@@ -195,7 +195,7 @@ $this->module('logger')->extend([
     if (!file_exists($filename)) {
       return ['entries' => []];
     }
-    $settings = $this->app->storage->getKey('cockpit/options', 'logger.settings', []);
+    $settings = $this->getSettings();
     $lines = $this->tail($filename, $maxRows);
     $entries = [];
     foreach ($lines as $idx => $line) {
@@ -262,6 +262,15 @@ $this->module('logger')->extend([
     return array_reverse($lines);
   },
 
+  'getSettings' => function() {
+    $settings = array_replace_recursive(
+      $this->app->storage->getKey('cockpit/options', 'logger.settings', []),
+      $this->app['config']['logger'] ?? []
+    );
+
+    return $settings;
+  },
+
 ]);
 
 // Initialize logging during cockpit bootstrap.
@@ -272,8 +281,11 @@ $app->on('cockpit.bootstrap', function () use ($app) {
     $app('i18n')->load($translationspath, $app('i18n')->locale);
   }
 
-  // Load settings.
-  $settings = $app->storage->getKey('cockpit/options', 'logger.settings', []);
+  // Load settings (config.yaml can override db settings).
+  $settings = array_replace_recursive(
+    $app->storage->getKey('cockpit/options', 'logger.settings', []),
+    $app['config']['logger'] ?? []
+  );
 
   // Stop here if no settings (e.g. logger not configured yet) or not enabled.
   if (!isset($settings['enabled']) || !$settings['enabled']) {
@@ -291,6 +303,9 @@ $app->on('cockpit.bootstrap', function () use ($app) {
   // Set handler.
   if ($settings['handler'] == 'SyslogHandler') {
     $handler = new Monolog\Handler\SyslogHandler($settings['syslog']['ident'], $settings['syslog']['facility'], $level);
+  }
+  else if ($settings['handler'] == 'SyslogUdpHandler') {
+    $handler = new Monolog\Handler\SyslogUdpHandler($settings['syslog']['host'], $settings['syslog']['port'], $settings['syslog']['facility'], $level, TRUE, $settings['syslog']['ident']);
   }
   else {
     $path = $app->path($settings['log']['path']);

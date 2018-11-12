@@ -61,12 +61,17 @@
         <i class="uk-icon-spinner uk-icon-spin"></i>
     </div>
 
-    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !loading && !entries.length }">
+    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !loading && handler != 'StreamHandler' }">
+        <img class="uk-svg-adjust" src="@url('assets:app/media/icons/database.svg')" width="100" height="100" alt="@lang('Invalid handler')" data-uk-svg />
+        <p>@lang('Configured handler doesnt support fetching of logs! Switch to StreamHandler if you want to see logs here.')</p>
+    </div>
+
+    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !loading && !entries.length && handler == 'StreamHandler' }">
         <img class="uk-svg-adjust" src="@url('assets:app/media/icons/database.svg')" width="100" height="100" alt="@lang('Recent log messages')" data-uk-svg />
         <p>@lang('No recent log messages found!')</p>
     </div>
 
-    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !filepath }">
+    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !filepath && handler == 'StreamHandler' }">
         <img class="uk-svg-adjust" src="@url('assets:app/media/icons/emoticon-sad.svg')" width="100" height="100" alt="@lang('Cannot open the log files')" data-uk-svg />
         <p>@lang('Cannot open the log file.')</p>
     </div>
@@ -115,6 +120,7 @@
         this.loading = true;
         this.fetching = true;
         this.filepath = {{ json_encode($filepath) }};
+        this.handler = {{ json_encode($handler) }};
         this.entries = [];
         this.entry = false;
         this.maxRows = 100;

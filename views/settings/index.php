@@ -75,6 +75,8 @@
             </select>
             <p class="uk-text-small uk-text-muted" if="{settings.handler == 'StreamHandler'}"> @lang('Saves log entries in the filesystem using the configured location and filename')</p>
             <p class="uk-text-small uk-text-muted" if="{settings.handler == 'SyslogHandler'}"> @lang('Writes the log entries using the operating system syslog functionality. Requires an ident and syslog facility.')</p>
+            <p class="uk-text-small uk-text-muted" if="{settings.handler == 'SyslogUdpHandler'}"> @lang('Writes the log entries using a remote rsyslog server.')</p>
+
           </div>
         </div>
 
@@ -91,6 +93,34 @@
         </div>
 
         <div class="uk-form-row" if="{settings.handler === 'SyslogHandler'}">
+          <div class="uk-margin uk-panel-box">
+            <label class="uk-text-small">@lang('Syslog Ident')</label>
+            <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="settings.syslog.ident" required="required">
+            <p class="uk-text-small uk-text-muted">The syslog "ident" string to identify the program name (e.g. cockpit)</p>
+          </div>
+          <div class="uk-panel-box">
+            <div class="uk-form-select">
+              <label class="uk-text-small">@lang('Syslog Facility')</label>
+              <div class="uk-text-primary uk-margin-top">{ settings.syslog.facility }</div>
+              <select ref="selectFacility" class="uk-form-large uk-width-1-1" onchange="{ toggleFacility }">
+                <option each="{ option,idx in facilities }" value="{ option }" selected="{ settings.syslog.facility === option }">{ option }</option>
+              </select>
+              <p class="uk-text-small uk-text-muted">Select the syslog facility to use.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="uk-form-row" if="{settings.handler === 'SyslogUdpHandler'}">
+          <div class="uk-margin uk-panel-box">
+            <label class="uk-text-small">@lang('Host')</label>
+            <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="settings.syslog.host" required="required">
+            <p class="uk-text-small uk-text-muted">The rsyslog server hostname.</p>
+          </div>
+          <div class="uk-margin uk-panel-box">
+            <label class="uk-text-small">@lang('Port')</label>
+            <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="settings.syslog.port" required="required">
+            <p class="uk-text-small uk-text-muted">The rsyslog server port (Default is 514).</p>
+          </div>
           <div class="uk-margin uk-panel-box">
             <label class="uk-text-small">@lang('Syslog Ident')</label>
             <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="settings.syslog.ident" required="required">
@@ -143,7 +173,8 @@
 
         this.handlers = [
           'StreamHandler',
-          'SyslogHandler'
+          'SyslogHandler',
+          'SyslogUdpHandler'
         ];
 
         this.formatters = [

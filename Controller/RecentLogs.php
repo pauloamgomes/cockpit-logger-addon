@@ -17,9 +17,10 @@ class RecentLogs extends AuthController {
       return FALSE;
     }
 
-    $settings = $this->app->storage->getKey('cockpit/options', 'logger.settings', []);
+    $settings = $this->app->module('logger')->getSettings();
 
     $path = $this->app->path($settings['log']['path']);
+    $handler = $settings['handler'];
 
     $filepath = $path . DIRECTORY_SEPARATOR . $settings['log']['filename'];
 
@@ -27,7 +28,10 @@ class RecentLogs extends AuthController {
       $filepath = FALSE;
     }
 
-    return $this->render('logger:views/logs/index.php', ['filepath' => $filepath]);
+    return $this->render('logger:views/logs/index.php', [
+      'filepath' => $filepath,
+      'handler' => $handler,
+    ]);
   }
 
   public function download() {
@@ -35,7 +39,7 @@ class RecentLogs extends AuthController {
       return FALSE;
     }
 
-    $settings = $this->app->storage->getKey('cockpit/options', 'logger.settings', []);
+    $settings = $this->app->module('logger')->getSettings();
 
     $path = $this->app->path($settings['log']['path']);
 
