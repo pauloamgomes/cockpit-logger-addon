@@ -19,9 +19,13 @@ $this->on('cockpit.view.settings.item', function () {
 // Bind admin routes.
 $app->on('admin.init', function () use ($app) {
   $this->bindClass('Logger\\Controller\\Admin', 'settings/logger');
-  $this->bindClass('Logger\\Controller\\RecentLogs', 'recent-logs');
 
-  if ($app->module('cockpit')->hasaccess('logger', 'manage.view')) {
+  // Only display recent logs if Logger is enabled and handler is StreamHandler.
+  $enabled = $app->module('logger')->enabled;
+  $settings = $app->module('logger')->getSettings();
+  $permission = $app->module('cockpit')->hasaccess('logger', 'manage.view');
+  if ($enabled && $permission && $settings['handler'] === 'StreamHandler') {
+    $this->bindClass('Logger\\Controller\\RecentLogs', 'recent-logs');
     // Add to modules menu.
     $this('admin')->addMenuItem('modules', [
       'label' => 'Recent Logs',
