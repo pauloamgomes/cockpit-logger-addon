@@ -156,7 +156,7 @@ $this->module('logger')->extend([
       $entry['date'] = date($dateFormat, strtotime($json['datetime']['date']));
     }
     if (isset($json['context'])) {
-      $entry['user'] = $json['context']['user'];
+      $entry['user'] = $json['context']['user'] ?? '';
     }
     return $entry;
   },
