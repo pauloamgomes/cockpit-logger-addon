@@ -58,6 +58,7 @@ class Admin extends AuthController {
         ['name' => 'cockpit.media.rename', 'enabled' => TRUE],
         ['name' => 'cockpit.assets.remove', 'enabled' => TRUE],
         ['name' => 'cockpit.account.login', 'enabled' => TRUE],
+        ['name' => 'cockpit.account.login.error', 'enabled' => TRUE],
         ['name' => 'cockpit.account.logout', 'enabled' => TRUE],
         ['name' => 'cockpit.clearcache', 'enabled' => TRUE],
         ['name' => 'cockpit.api.erroronrequest', 'enabled' => TRUE],

@@ -205,6 +205,16 @@ $app->on('cockpit.account.login', function ($user) use ($app) {
   ]);
 });
 
+// Account login error.
+$app->on('cockpit.account.login.error', function ($user) use ($app) {
+  if (!$this->module('logger')->eventEnabled('cockpit.account.login.error')) {
+    return;
+  }
+  $this->module('logger')->notice("Login error", [
+    'user' => $user,
+  ]);
+});
+
 // Account logout.
 $app->on('cockpit.account.logout', function ($user) use ($app) {
   if (!$this->module('logger')->eventEnabled('cockpit.account.logout')) {
