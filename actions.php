@@ -286,3 +286,11 @@ $app->on('imagestyles.remove', function ($style) {
     'name' => $style['name'],
   ]);
 });
+
+// Custom logger events from other addons.
+$app->on('logger.event', function($level, $message, $extra = []) use($app) {
+  if (!in_array($level, ['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'])) {
+    $level = 'notice';
+  }
+  $this->module('logger')->$level($message, $extra);
+});
