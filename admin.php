@@ -11,11 +11,6 @@ $this("acl")->addResource('logger', [
   'manage.view',
 ]);
 
-// Add setting entry.
-$this->on('cockpit.view.settings.item', function () {
-  $this->renderView("logger:views/partials/settings.php");
-});
-
 // Bind admin routes.
 $app->on('admin.init', function () use ($app) {
   $this->bindClass('Logger\\Controller\\Admin', 'settings/logger');
@@ -24,6 +19,14 @@ $app->on('admin.init', function () use ($app) {
   $enabled = $app->module('logger')->enabled;
   $settings = $app->module('logger')->getSettings();
   $permission = $app->module('cockpit')->hasaccess('logger', 'manage.view');
+
+  if ($app->module('cockpit')->hasaccess('logger', 'manage.admin')) {
+    // Add settings entry.
+    $this->on('cockpit.view.settings.item', function () {
+      $this->renderView("logger:views/partials/settings.php");
+    });
+  }
+
   if ($enabled && $permission && $settings['handler'] === 'StreamHandler') {
     $this->bindClass('Logger\\Controller\\RecentLogs', 'recent-logs');
     // Add to modules menu.

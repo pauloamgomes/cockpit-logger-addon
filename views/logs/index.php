@@ -101,9 +101,12 @@
                 <td class="entry-date uk-text-small">{entry.date}</td>
                 <td><span class="uk-badge uk-text-small uk-alert-{entry.type}">{entry.level}</span></td>
                 <td>
-                  <a href="/accounts/account/{entry.user.id}" target="_blank" class="uk-text-small">
+                  <a href="@route('/accounts/account/'){entry.user.id}" target="_blank" class="uk-text-small" if="{entry.user.id}">
                     {entry.user.name}
                   </a>
+                  <span class="uk-text-small" if="{!entry.user.id}">
+                    {entry.user.name}
+                  </span>
                 </td>
                 <td>{entry.message}</td>
             </tr>
