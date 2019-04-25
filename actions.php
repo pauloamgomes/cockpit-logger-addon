@@ -7,7 +7,7 @@
 
 // Handle collections save.
 $app->on('collections.save.after', function ($name, &$entry, $isUpdate) use ($app) {
-  if (!$this->module('logger')->eventEnabled('collections.save.after')) {
+  if ($this->module('logger')->eventDisabled('collections.save.after')) {
     return;
   }
   $this->module('logger')->notice("Collection entry saved", [
@@ -19,7 +19,7 @@ $app->on('collections.save.after', function ($name, &$entry, $isUpdate) use ($ap
 
 // Handle collections save.
 $app->on('collections.remove.after', function ($name, $result) use ($app) {
-  if (!$this->module('logger')->eventEnabled('collections.remove.after')) {
+  if ($this->module('logger')->eventDisabled('collections.remove.after')) {
     return;
   }
   if ($result) {
@@ -36,7 +36,7 @@ $app->on('collections.remove.after', function ($name, $result) use ($app) {
 
 // Handle collections creation.
 $app->on('collections.createcollection', function ($collection) use ($app) {
-  if (!$this->module('logger')->eventEnabled('collections.createcollection')) {
+  if ($this->module('logger')->eventDisabled('collections.createcollection')) {
     return;
   }
   $this->module('logger')->notice("Collection created", [
@@ -47,7 +47,7 @@ $app->on('collections.createcollection', function ($collection) use ($app) {
 
 // Handle collections update.
 $app->on('collections.updatecollection', function ($collection) use ($app) {
-  if (!$this->module('logger')->eventEnabled('collections.updatecollection')) {
+  if ($this->module('logger')->eventDisabled('collections.updatecollection')) {
     return;
   }
   $this->module('logger')->notice("Collection updated", [
@@ -58,7 +58,7 @@ $app->on('collections.updatecollection', function ($collection) use ($app) {
 
 // Handle collections removal.
 $app->on('collections.removecollection', function ($name) use ($app) {
-  if (!$this->module('logger')->eventEnabled('collections.removecollection')) {
+  if ($this->module('logger')->eventDisabled('collections.removecollection')) {
     return;
   }
   $this->module('logger')->notice("Collection removed", [
@@ -68,7 +68,7 @@ $app->on('collections.removecollection', function ($name) use ($app) {
 
 // Handle regions save.
 $app->on('regions.save.after', function ($region) use ($app) {
-  if (!$this->module('logger')->eventEnabled('regions.save.after')) {
+  if ($this->module('logger')->eventDisabled('regions.save.after')) {
     return;
   }
   $this->module('logger')->notice("Region saved", [
@@ -79,7 +79,7 @@ $app->on('regions.save.after', function ($region) use ($app) {
 
 // Handle regions remove.
 $app->on('regions.remove', function ($region) use ($app) {
-  if (!$this->module('logger')->eventEnabled('regions.remove')) {
+  if ($this->module('logger')->eventDisabled('regions.remove')) {
     return;
   }
   $this->module('logger')->notice("Region removed", [
@@ -90,7 +90,7 @@ $app->on('regions.remove', function ($region) use ($app) {
 
 // Handle singleton save.
 $app->on('singleton.save.after', function ($singleton) use ($app) {
-  if (!$this->module('logger')->eventEnabled('singleton.save.after')) {
+  if ($this->module('logger')->eventDisabled('singleton.save.after')) {
     return;
   }
   $this->module('logger')->notice("Singleton saved", [
@@ -101,7 +101,7 @@ $app->on('singleton.save.after', function ($singleton) use ($app) {
 
 // Handle singleton data save.
 $app->on('singleton.saveData.after', function ($singleton, $data) use ($app) {
-  if (!$this->module('logger')->eventEnabled('singleton.saveData.after')) {
+  if ($this->module('logger')->eventDisabled('singleton.saveData.after')) {
     return;
   }
   $this->module('logger')->notice("Singleton data saved", [
@@ -112,7 +112,7 @@ $app->on('singleton.saveData.after', function ($singleton, $data) use ($app) {
 
 // Handle singleton removal.
 $app->on('singleton.remove', function ($singleton) use ($app) {
-  if (!$this->module('logger')->eventEnabled('regions.remove')) {
+  if ($this->module('logger')->eventDisabled('regions.remove')) {
     return;
   }
   $this->module('logger')->notice("Singleton removed", [
@@ -123,7 +123,7 @@ $app->on('singleton.remove', function ($singleton) use ($app) {
 
 // Handle forms save.
 $app->on('forms.save.after', function ($name, $entry) use ($app) {
-  if (!$this->module('logger')->eventEnabled('forms.save.after')) {
+  if ($this->module('logger')->eventDisabled('forms.save.after')) {
     return;
   }
   $this->module('logger')->notice("Form saved", [
@@ -134,7 +134,7 @@ $app->on('forms.save.after', function ($name, $entry) use ($app) {
 
 // Assets save.
 $app->on('cockpit.assets.save', function ($assets) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.assets.save')) {
+  if ($this->module('logger')->eventDisabled('cockpit.assets.save')) {
     return;
   }
   $asset = reset($assets);
@@ -146,7 +146,7 @@ $app->on('cockpit.assets.save', function ($assets) use ($app) {
 
 // Assets remove.
 $app->on('cockpit.assets.remove', function ($assets) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.assets.remove')) {
+  if ($this->module('logger')->eventDisabled('cockpit.assets.remove')) {
     return;
   }
   $asset = reset($assets);
@@ -159,7 +159,7 @@ $app->on('cockpit.assets.remove', function ($assets) use ($app) {
 
 // Media upload.
 $app->on('cockpit.media.upload', function ($_uploaded, $_failed) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.media.upload')) {
+  if ($this->module('logger')->eventDisabled('cockpit.media.upload')) {
     return;
   }
   if (!empty($_uploaded)) {
@@ -176,7 +176,7 @@ $app->on('cockpit.media.upload', function ($_uploaded, $_failed) use ($app) {
 
 // Media remove files.
 $app->on('cockpit.media.removefiles', function ($deletions) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.media.removefiles')) {
+  if ($this->module('logger')->eventDisabled('cockpit.media.removefiles')) {
     return;
   }
   $this->module('logger')->notice("Media files removed", [
@@ -186,7 +186,7 @@ $app->on('cockpit.media.removefiles', function ($deletions) use ($app) {
 
 // Media rename files.
 $app->on('cockpit.media.rename', function ($source, $target) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.media.rename')) {
+  if ($this->module('logger')->eventDisabled('cockpit.media.rename')) {
     return;
   }
   $this->module('logger')->notice("Media renamed", [
@@ -197,7 +197,7 @@ $app->on('cockpit.media.rename', function ($source, $target) use ($app) {
 
 // Account login.
 $app->on('cockpit.authentication.success', function ($user) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.authentication.success')) {
+  if ($this->module('logger')->eventDisabled('cockpit.authentication.success')) {
     return;
   }
   $this->module('logger')->notice("User logged in", [
@@ -207,7 +207,7 @@ $app->on('cockpit.authentication.success', function ($user) use ($app) {
 
 // Account login error.
 $app->on('cockpit.authentication.failed', function ($user) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.authentication.failed')) {
+  if ($this->module('logger')->eventDisabled('cockpit.authentication.failed')) {
     return;
   }
   $this->module('logger')->notice("Login error", [
@@ -217,7 +217,7 @@ $app->on('cockpit.authentication.failed', function ($user) use ($app) {
 
 // Account logout.
 $app->on('cockpit.account.logout', function ($user) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.account.logout')) {
+  if ($this->module('logger')->eventDisabled('cockpit.account.logout')) {
     return;
   }
   $this->module('logger')->notice("User logged out", [
@@ -227,7 +227,7 @@ $app->on('cockpit.account.logout', function ($user) use ($app) {
 
 // Cache clear.
 $app->on('cockpit.clearcache', function () use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.clearcache')) {
+  if ($this->module('logger')->eventDisabled('cockpit.clearcache')) {
     return;
   }
   $this->module('logger')->notice("Cache clear executed");
@@ -235,7 +235,7 @@ $app->on('cockpit.clearcache', function () use ($app) {
 
 // API Request error clear.
 $app->on('cockpit.api.erroronrequest', function ($route, $error) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.api.erroronrequest')) {
+  if ($this->module('logger')->eventDisabled('cockpit.api.erroronrequest')) {
     return;
   }
   $this->module('logger')->error("API Request error", [
@@ -246,7 +246,7 @@ $app->on('cockpit.api.erroronrequest', function ($route, $error) use ($app) {
 
 // Cockpit request error.
 $app->on('cockpit.request.error', function ($error) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.request.error')) {
+  if ($this->module('logger')->eventDisabled('cockpit.request.error')) {
     return;
   }
   $this->module('logger')->error("Request error", [
@@ -256,7 +256,7 @@ $app->on('cockpit.request.error', function ($error) use ($app) {
 
 // Cockpi imagestyles addon create style.
 $app->on('imagestyles.createstyle', function ($style) {
-  if (!$this->module('logger')->eventEnabled('imagestyles.createstyle')) {
+  if ($this->module('logger')->eventDisabled('imagestyles.createstyle')) {
     return;
   }
   $this->module('logger')->notice("Image style created", [
@@ -267,7 +267,7 @@ $app->on('imagestyles.createstyle', function ($style) {
 
 // Cockpi imagestyles addon save after.
 $app->on('imagestyles.save.after', function ($style) {
-  if (!$this->module('logger')->eventEnabled('imagestyles.save.after')) {
+  if ($this->module('logger')->eventDisabled('imagestyles.save.after')) {
     return;
   }
   $this->module('logger')->notice("Image style updated", [
@@ -278,7 +278,7 @@ $app->on('imagestyles.save.after', function ($style) {
 
 // Cockpi imagestyles addon remove style.
 $app->on('imagestyles.remove', function ($style) {
-  if (!$this->module('logger')->eventEnabled('imagestyles.remove')) {
+  if ($this->module('logger')->eventDisabled('imagestyles.remove')) {
     return;
   }
   $this->module('logger')->notice("Image style removed", [

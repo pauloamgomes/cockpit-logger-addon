@@ -46,7 +46,7 @@ groups:
 
 The settings page provide all the main configurations:
 
-![Cockpit Logger settings page](https://monosnap.com/image/5F2FjRF4Wzypte4dikVB1uP8vWPSaA.png)
+![Cockpit Logger settings page](https://monosnap.com/image/j4cKHg9xbAU5zfu0gIivgeO0OpFgZw)
 
 1. **Enable** - Check that option to enable the logging
 
@@ -136,7 +136,7 @@ When using the config.yaml, the settings will take precedence over the configura
 
 ### Event Settings
 
-Most relevant Cockpit events (e.g. User login, Collection removal) can be set to be logged automatically:
+Most relevant Cockpit events (e.g. User login, Collection removal) are logged automatically:
 
    * collections.save.after
    * collections.remove.after
@@ -153,8 +153,8 @@ Most relevant Cockpit events (e.g. User login, Collection removal) can be set to
    * cockpit.media.upload
    * cockpit.media.removefiles
    * cockpit.media.rename
-   * cockpit.authentication.success
    * cockpit.assets.remove
+   * cockpit.authentication.success
    * cockpit.authentication.failed
    * cockpit.account.logout
    * cockpit.clearcache
@@ -163,6 +163,15 @@ Most relevant Cockpit events (e.g. User login, Collection removal) can be set to
    * imagestyles.save.after
    * imagestyles.createstyle
    * imagestyles.remove
+
+If required to disable, they can be disabled in the config.yaml, e.g:
+
+```yaml
+logger:
+  disabledEvents:
+    - collections.save.after
+    - collections.remove.after
+```
 
 ### Examples
 

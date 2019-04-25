@@ -90,12 +90,8 @@ $this->module('logger')->extend([
     }
   },
 
-  'getEvents' => function() {
-    return $this->events;
-  },
-
-  'eventEnabled' => function ($event) {
-    return isset($this->events[$event]);
+  'eventDisabled' => function ($event) {
+    return isset($this->disabledEvents[$event]);
   },
 
   'saveSettings' => function ($settings) {
@@ -319,17 +315,15 @@ $app->on('cockpit.bootstrap', function () use ($app) {
   $this->module('logger')->level = $settings['level'];
   $this->module('logger')->context = $settings['context'];
 
-  // Act on cockpit core events.
+  // Set disabled events.
   $events = [];
-  foreach ($settings['events'] as $event) {
-    if ($event['enabled']) {
-      $events[$event['name']] = $event['name'];
+  if (!empty($settings['disabledEvents'])) {
+    foreach ($settings['disabledEvents'] as $event) {
+      $events[$event] = $event;
     }
   }
-  if (!empty($events)) {
-    $this->module('logger')->events = $events;
-    include_once __DIR__ . '/actions.php';
-  }
+  $this->module('logger')->disabledEvents = $events;
+  include_once __DIR__ . '/actions.php';
 });
 
 // If admin.

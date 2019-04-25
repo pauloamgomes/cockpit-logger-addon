@@ -11,13 +11,6 @@
       <div class="uk-grid-margin uk-width-medium-2-3">
 
         <div class="uk-form-row">
-          <label class="uk-text-small">@lang('Enable/Disable log functionality')</label>
-          <div class="uk-margin-top">
-            <field-boolean bind="settings.enabled" title="@lang('Enabled')" label="@lang('Enabled')"></field-boolean>
-          </div>
-        </div>
-
-        <div class="uk-form-row">
             <label class="uk-text-small">@lang('Context attributes to include on each log entry')</label>
             <div class="uk-margin-top">
               <field-boolean bind="settings.context.user" title="@lang('Enabled')" label="@lang('Log the Username')"></field-boolean>
@@ -147,17 +140,10 @@
 
       <div class="uk-grid-margin uk-width-medium-1-3">
         <div class="uk-form-row">
-            <label class="uk-text-small">@lang('Log Events')</label>
-
-            <div class="uk-margin-top" each="{event, idx in settings.events}" onclick="{ setEvent }" style="cursor:pointer;">
-                <div class="uk-form-switch">
-                    <input ref="check" type="checkbox" id="{ event['name'] }" checked="{ event.enabled }"/>
-                    <label for="{ event['name'] }"></label>
-                </div>
-                <span>{ event['name'] }</span>
-            </div>
-
-            <p class="uk-text-small uk-text-muted"> @lang('Set the Cockpit events to be automatically logged.') </p>
+          <label class="uk-text-small">@lang('Enable/Disable log functionality')</label>
+          <div class="uk-margin-top">
+            <field-boolean bind="settings.enabled" title="@lang('Enabled')" label="@lang('Enabled')"></field-boolean>
+          </div>
         </div>
       </div>
 
@@ -209,7 +195,6 @@
             this.trigger('update');
 
             App.$(this.refs.event).on('keydown', function(e) {
-
                 if (e.keyCode == 13) {
                     e.preventDefault();
 
@@ -224,9 +209,7 @@
 
                     return false;
                 }
-
             });
-
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
@@ -264,11 +247,6 @@
 
         toggleFormatter() {
           this.settings.formatter = this.refs.selectFormatter.value;
-        }
-
-        setEvent(e) {
-          e.preventDefault();
-          $this.settings.events[e.item.idx].enabled = !$this.settings.events[e.item.idx].enabled;
         }
 
     </script>
