@@ -153,8 +153,9 @@ Most relevant Cockpit events (e.g. User login, Collection removal) can be set to
    * cockpit.media.upload
    * cockpit.media.removefiles
    * cockpit.media.rename
+   * cockpit.authentication.success
    * cockpit.assets.remove
-   * cockpit.account.login
+   * cockpit.authentication.failed
    * cockpit.account.logout
    * cockpit.clearcache
    * cockpit.api.erroronrequest

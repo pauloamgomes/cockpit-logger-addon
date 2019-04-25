@@ -196,8 +196,8 @@ $app->on('cockpit.media.rename', function ($source, $target) use ($app) {
 });
 
 // Account login.
-$app->on('cockpit.account.login', function ($user) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.account.login')) {
+$app->on('cockpit.authentication.success', function ($user) use ($app) {
+  if (!$this->module('logger')->eventEnabled('cockpit.authentication.success')) {
     return;
   }
   $this->module('logger')->notice("User logged in", [
@@ -206,8 +206,8 @@ $app->on('cockpit.account.login', function ($user) use ($app) {
 });
 
 // Account login error.
-$app->on('cockpit.account.login.error', function ($user) use ($app) {
-  if (!$this->module('logger')->eventEnabled('cockpit.account.login.error')) {
+$app->on('cockpit.authentication.failed', function ($user) use ($app) {
+  if (!$this->module('logger')->eventEnabled('cockpit.authentication.failed')) {
     return;
   }
   $this->module('logger')->notice("Login error", [
