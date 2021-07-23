@@ -174,15 +174,22 @@ $this->module('logger')->extend([
   },
 
   'parseEntryUser' => function($userEntry) {
-    $username = $userEntry['user'] ?? $userEntry;
+    if(isset($userEntry['email'])){
+      $criteria = ['email' => $userEntry['email']];
+    }else if(isset($userEntry['user'])){
+      $criteria = ['user' => $userEntry['user']];
+    }else if(is_string($userEntry)){
+      $criteria = ['user' => $userEntry];
+    }else{
+      throw new \ErrorException('Bad parameter for $userEntry; ');
+    }
 
     $user = [
-      'name' => $username,
-      'id' => '',
+      'name' => $criteria['email'] ?? $criteria['user'],
+      'id' => ''
     ];
-    $account = $this->app->storage->findOne('cockpit/accounts', [
-      'user' => $username,
-    ]);
+
+    $account = $this->app->storage->findOne('cockpit/accounts', $criteria);
     if ($account && isset($account['_id'])) {
       $user['id'] = $account['_id'];
     }
