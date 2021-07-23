@@ -173,7 +173,9 @@ $this->module('logger')->extend([
     return 'info';
   },
 
-  'parseEntryUser' => function($username) {
+  'parseEntryUser' => function($userEntry) {
+    $username = $userEntry['user'] ?? $userEntry;
+
     $user = [
       'name' => $username,
       'id' => '',
